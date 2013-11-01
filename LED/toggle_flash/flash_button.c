@@ -13,18 +13,17 @@ ISR(TIMER0_OVF_vect) {
 	//check if the button is still pressed (debounce)
 	if(prevState != PINA) {
 		//put the changes in active state
-		activeState ^= ~PINA;
+		activeState ^= PINA;
 
-		//Put the inverted into the PORT so the lights will be off when not
 		//chosen for blinking
-		PORTB = ~activeState;
+		PORTB = activeState;
 	}
 
 	//store PINA in the previous state
 	prevState = PINA;
 
 	//toggle the LEDs
-	PORTB ^= (activeState);
+	PORTB ^= activeState;
 }
 
 void main() {
