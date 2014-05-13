@@ -1,0 +1,7 @@
+#!/bin/bash
+
+avr-gcc -g -Os -mmcu=atmega32 -c main.c hc595_shift.c atoh.c
+avr-gcc -g -mmcu=atmega32 -o main.elf main.o hc595_shift.o atoh.o
+avr-objcopy -j .text -j .data -O ihex main.elf main.hex
+avrdude -p m32 -c dragon_jtag -P usb -e -U flash:w:main.hex
+

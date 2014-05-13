@@ -8,6 +8,8 @@
 void hc595_init() {
 	DDRD |= (1 << PD0 | 1 << PD1 | 1 << PD2 | 1 << PD3);
 	PORTD &= ~(1 << PD0 | 1 << PD1 | 1 << PD2 | 1 << PD3);
+	hc595_dataHigh();
+	hc595_dataRedHigh();
 }
 
 void hc595_shiftByte(uint8_t data) {
@@ -48,11 +50,17 @@ void hc595_clk() {
 
 void hc595_dataLow() {
 	PORTD &= ~(1 << PD0);
-	PORTD |= (1 << PD1);
 }
 
 void hc595_dataHigh() {
 	PORTD |= (1 << PD0);
+}
+
+void hc595_dataRedLow() {
+	PORTD &= ~(1 << PD1);
+}
+
+void hc595_dataRedHigh() {
 	PORTD |= (1 << PD1);
 }
 

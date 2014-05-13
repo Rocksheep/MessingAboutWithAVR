@@ -10,5 +10,7 @@ void hc595_latchLow();
 void hc595_latchHigh();
 void hc595_dataLow();
 void hc595_dataHigh();
+void hc595_dataRedLow();
+void hc595_dataRedHigh();
 
 #endif
