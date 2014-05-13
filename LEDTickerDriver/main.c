@@ -148,33 +148,31 @@ int main() {
 
 	//test length
 	// strlen(s) * 6
-	textLength = 30;//10 * 5 + 9;
 
 	//all output
 	DDRD = 0xFF;
 	DDRA = 0xFF;
 
-	char text[] = "hallo";
-	char *c = text;
+	char text[] = "nee";
+	textLength = strlen(text);//10 * 5 + 9;
 	int8_t j, i;
-	uint8_t test = 0;
-	uint8_t done = 0;
 
 	while(1) {
-		if(test == 3)
-			test = 0;
 		if(shiftIn > 80 + textLength)
 			shiftIn = 0;
 		curMaxShift = shiftIn;
+
+		//scan the rows
 		for(row = 7; row > 0; row--) {
 			charCol = textLength; //word length
 			PORTA = row;
 
 			hc595_latchLow();
+			// all the columns + the length of the text
 			for(col = 80 + textLength; col >= 0; ){
-				for(i = strlen(text) - 1; i >= 0; i--) {
-					for(j = 4; j >= 0; j--) {
-						if(80 + textLength - curMaxShift > col && charCol >= 0) {
+				if(80 + textLength - curMaxShift > col && charCol >= 0) {
+					for(i = strlen(text) - 1; i >= 0; i--) {
+						for(j = 4; j >= 0; j--) {
 							if(~chars[text[i] - 'a'][j] & (1 << row)) {
 								hc595_dataHigh();
 							}
@@ -182,19 +180,41 @@ int main() {
 								hc595_dataLow();
 							}
 							charCol--;
+							hc595_clk();
 						}
-						else {
-							hc595_dataHigh();
-						}
-						col--;
+						hc595_dataHigh();
 						hc595_clk();
 					}
-					hc595_dataHigh();
-					hc595_clk();
-					col--;
 				}
+				else {
+					hc595_dataHigh();
+				}
+				col--;
+				hc595_clk();
 			}
+				
+			
 			hc595_latchHigh();
+
+			// hc595_latchLow();
+			// for(col = 80 + textLength; col >= 0; col--){
+			// 	if( textLength + 80 - curMaxShift > col && charCol >= 0) {
+			// 		if(~text[charCol] & (1 << row))
+			// 			hc595_dataHigh();
+			// 		else
+			// 			hc595_dataLow();
+			// 		// [>if(~orange[charCol] & (1 << row))<]
+			// 			// [>hc595_dataRedHigh();<]
+			// 		// [>else<]
+			// 			// [>hc595_dataRedLow();<]
+			// 		charCol -= 1;
+			// 	}
+			// 	else {
+			// 		hc595_dataHigh();
+			// 	}
+			// 	hc595_clk();
+			// }
+			// hc595_latchHigh();
 		}
 	}
 
